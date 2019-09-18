@@ -56,6 +56,15 @@ function tick() {
             gameTicksLeft = 0;
             refund = true;
         }
+
+        if (bonusSpeed > 1 && gameTicksLeft > (5000 / baseManaPerSecond)) {
+            bonusSpeed = Math.max(5, bonusSpeed - 0.1);
+        }
+
+        if (bonusSpeed > 1 && bonusSpeed < 100 && !refund) {
+            bonusSpeed += 0.01;
+        }
+
         if (stop) {
             return;
         }
