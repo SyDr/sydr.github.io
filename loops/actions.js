@@ -21,6 +21,12 @@ function Actions() {
 
         curAction.ticks++;
         curAction.manaUsed++;
+        spentMana[curAction.name]++;
+        currentRunSpentMana++;
+        view.adjustManaCost(curAction.name);
+        view.adjustExpMultiplayer(curAction.name);
+        view.adjustTotalManaSpent(curAction.name);
+
         curAction.timeSpent += 1 / baseManaPerSecond / getActualGameSpeed();
         // only for multi-part progress bars
         if (curAction.loopStats) {
@@ -57,6 +63,7 @@ function Actions() {
                         curAction.manaRemaining = timeNeeded - timer;
                         curAction.goldRemaining = resources.gold;
                         curAction.finish();
+                        currentRunCompletedActions++;
                         break;
                     }
                     towns[curAction.townNum][curAction.varName] = curProgress;
@@ -75,6 +82,7 @@ function Actions() {
 
             this.completedTicks += curAction.adjustedTicks;
             curAction.finish();
+            currentRunCompletedActions++;
             curAction.manaRemaining = timeNeeded - timer;
             
             if (curAction.cost) {
@@ -134,6 +142,8 @@ function Actions() {
         this.currentPos = 0;
         this.completedTicks = 0;
         curTown = 0;
+        currentRunCompletedActions = 0;
+        currentRunSpentMana = 0;        
         towns[0].Heal = 0;
         towns[0].HealLoopCounter = 0;
         towns[0].Fight = 0;

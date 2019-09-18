@@ -689,6 +689,7 @@
             <mana_cost>Mana Cost</mana_cost>
             <exp_multiplier>Exp Multiplier</exp_multiplier>
             <mana_used>Mana Used</mana_used>
+            <total_mana_spent>Total Mana Spent</total_mana_spent>
             <mana_used_explanation><![CDATA[
           Shows stat gain affecting speed.<br>
           Updates every completed action.<br>

@@ -10,17 +10,25 @@ let refund = false;
 let radarUpdateTime = 0;
 let timeCounter = 0;
 
-function getSpeedMult(zone) {
+function getRitualSpeedMult(zone) {
     if (isNaN(zone)) zone = curTown;
+
+    if (zone === 0 && getBuffLevel("Ritual") > 0) return Math.min(getBuffLevel("Ritual"), 20) / 10;
+    if (zone === 1 && getBuffLevel("Ritual") > 20) return Math.min(getBuffLevel("Ritual") - 20, 20) / 20;
+    if (zone === 2 && getBuffLevel("Ritual") > 40) return Math.min(getBuffLevel("Ritual") - 40, 20) / 40;
+
+    return 1.0;
+}
+
+function getChronomancySpeedMult(zone) {
+    return Math.pow(1 + getSkillLevel("Chronomancy") / 60, 0.25);
+}
+
+function getSpeedMult(zone) {
     let speedMult = 1;
 
-    // dark ritual
-    if (zone === 0 && getBuffLevel("Ritual") > 0) speedMult *= 1 + Math.min(getBuffLevel("Ritual"), 20) / 10;
-    else if (zone === 1 && getBuffLevel("Ritual") > 20) speedMult *= 1 + Math.min(getBuffLevel("Ritual") - 20, 20) / 20;
-    else if (zone === 2 && getBuffLevel("Ritual") > 40) speedMult *= 1 + Math.min(getBuffLevel("Ritual") - 40, 20) / 40;
-
-    // chronomancy
-    speedMult *= Math.pow(1 + getSkillLevel("Chronomancy") / 60, 0.25);
+    speedMult *= getRitualSpeedMult(zone);
+    speedMult *= getChronomancySpeedMult();
 
     return speedMult;
 }
@@ -323,7 +331,8 @@ function adjustAll() {
     adjustGeysers();
     adjustMineSoulstones();
     adjustArtifacts();
-    view.adjustManaCost("Continue On");
+    view.adjustAllManaCost();
+    view.adjustAllTotalManaSpent();
 }
 
 function capAmount(index, townNum) {

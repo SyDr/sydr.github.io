@@ -225,6 +225,39 @@ function translateClassNames(name) {
     return false;
 }
 
+const allActions = ["Wander", "Smash Pots", "Pick Locks", "Buy Glasses", "Buy Mana", "Meet People", "Train Strength", 
+    "Short Quest", "Investigate", "Long Quest", "Warrior Lessons", "Mage Lessons", "Throw Party", "Heal The Sick", 
+    "Fight Monsters", "Small Dungeon", "Buy Supplies", "Haggle", "Start Journey", "Open Rift", "Explore Forest", 
+    "Wild Mana", "Gather Herbs", "Hunt", "Sit By Waterfall", "Old Shortcut", "Talk To Hermit", "Practical Magic", 
+    "Learn Alchemy", "Brew Potions", "Train Dexterity", "Train Speed", "Follow Flowers", "Bird Watching", "Clear Thicket", 
+    "Talk To Witch", "Dark Magic", "Dark Ritual", "Continue On", "Explore City", "Gamble", "Get Drunk", "Purchase Mana", 
+    "Sell Potions", "Read Books", "Adventure Guild", "Gather Team", "Large Dungeon", "Crafting Guild", "Craft Armor", 
+    "Apprentice", "Mason", "Architect", "Buy Pickaxe", "Start Trek", "Climb Mountain", "Mana Geyser", "Decipher Runes", 
+    "Chronomancy", "Looping Potion", "Pyromancy", "Explore Cavern", "Mine Soulstones", "Hunt Trolls", "Check Walls", 
+    "Take Artifacts", "Imbue Mind", "Face Judgement", "Look Around", "Great Feast", "Fall From Grace", "Survey Area"]
+
+let cachedActions = {};
+function translateClassNamesCached(name) {
+    let action = cachedActions[name];
+
+    if (!action)
+        action = cachedActions[name] = translateClassNames(name);
+    
+    return action;
+}
+
+function getAdjustedManaCostImpl(name, original) {
+    return original - Math.pow(spentMana[name], 0.75) / 1000;
+}
+
+function getAdjustedManaCost(action) {
+    return Math.max(Math.ceil(getAdjustedManaCostImpl(action.name, action.manaCost())), 1);
+}
+
+function getAdjustedManaCostMultiplayer(action) {
+    return action.manaCost() / getAdjustedManaCost(action);
+}
+
 const cappedActions = [
     "Smash Pots",
     "Pick Locks",

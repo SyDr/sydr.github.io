@@ -223,7 +223,7 @@ function View() {
 
     this.updateTime = function() {
         document.getElementById("timeBar").style.width = `${100 - timer / timeNeeded * 100}%`;
-        document.getElementById("timer").textContent = `${intToString((timeNeeded - timer), 1)} | ${formatTime((timeNeeded - timer) / 50 / getActualGameSpeed())}`;
+        document.getElementById("timer").textContent = `${intToString((timeNeeded - timer), 1)} | ${formatTime((timeNeeded - timer) / 50 / getActualGameSpeed())} | ${precision2(getActualGameSpeed())}x`;
     };
     this.updateTotalTicks = function() {
         document.getElementById("totalTicks").textContent = `${formatNumber(actions.completedTicks)} | ${formatTime(timeCounter)}`;
@@ -934,7 +934,8 @@ function View() {
                     ${actionSkills}
                     ${actionStats}
                     <div class='bold'>${_txt("actions>tooltip>mana_cost")}:</div> <div id='manaCost${action.varName}'>${formatNumber(action.manaCost())}</div><br>
-                    <div class='bold'>${_txt("actions>tooltip>exp_multiplier")}:</div> ${action.expMult * 100}%<br>
+                    <div class='bold'>${_txt("actions>tooltip>exp_multiplier")}:</div> <div id='expMultiplayer${action.varName}'>${action.expMult * 100}%</div><br>
+                    <div class='bold'>${_txt("actions>tooltip>total_mana_spent")}:</div> <div id='totalManaSpent${action.varName}'>${formatNumber(spentMana[action.name])}</div><br>
                 </div>
             </div>`;
 
@@ -982,8 +983,30 @@ function View() {
     };
 
     this.adjustManaCost = function(actionName) {
-        const action = translateClassNames(actionName);
+        const action = translateClassNamesCached(actionName);
         document.getElementById(`manaCost${action.varName}`).textContent = formatNumber(action.manaCost());
+    };
+
+    this.adjustAllManaCost = function() {
+        for (const action of view.totalActionList) {
+            this.adjustManaCost(action.name);
+        }
+    };
+
+    this.adjustExpMultiplayer = function(actionName) {
+        const action = translateClassNamesCached(actionName);
+        document.getElementById(`expMultiplayer${action.varName}`).textContent = `${formatNumber(action.expMult * 100)}%`;
+    };
+
+    this.adjustTotalManaSpent = function(actionName) {
+        const action = translateClassNamesCached(actionName);
+        document.getElementById(`totalManaSpent${action.varName}`).textContent = `${formatNumber(spentMana[actionName])}`;
+    };
+
+    this.adjustAllTotalManaSpent = function() {
+        for (const action of view.totalActionList) {
+            this.adjustTotalManaSpent(action.name);
+        }
     };
 
     this.adjustGoldCost = function(varName, amount) {
